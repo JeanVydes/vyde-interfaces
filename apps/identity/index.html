@@ -1,0 +1,55 @@
+<!doctype html>
+<!--
+  `lang` is set here rather than from JavaScript so it is present in the served markup: a
+  screen reader picks its voice before the bundle has parsed, and an absent `lang` means it guesses.
+
+  The `class="no-js"` is deliberate. It is removed in `main.tsx` and used by `base.css` to keep
+  anything script-dependent invisible until it has actually mounted — a flash of unstyled or
+  half-initialised interface is worse than a slightly slower first paint.
+-->
+<html lang="en" class="no-js">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+
+    <!--
+      A restrictive policy, and note what it *cannot* set.
+
+      `frame-ancestors` is set by the GATEWAY, not here — see `GATEWAY_CSP_FRAME_ANCESTORS`. A
+      `frame-ancestors` in a meta tag is silently ignored by every browser, so putting it here would
+      look like clickjacking protection while providing none. This policy governs what the page may
+      *load and run*, which is a different question.
+
+      `script-src` has no `unsafe-inline` and no `unsafe-eval`. There are no inline scripts in this
+      app and there are none needed, which is the only way that stays true.
+
+      `connect-src` names the gateway from `%VITE_API_URL%` rather than listing origins by hand, and
+      that indirection is load-bearing. It was a literal `http://localhost:8000 https://api.vyde.dev`,
+      which was correct for the two environments it was written for and silently wrong for every other
+      one: in development the page's own requests were refused by CSP with `Failed to fetch`, a
+      message that points at the network and not at the policy. There is now one source of truth for
+      the gateway's address, and it is the same variable the fetch wrapper uses — so the policy cannot
+      drift from the code without the two failing in the same build.
+    -->
+    <meta
+      http-equiv="Content-Security-Policy"
+      content="default-src 'self';
+               script-src 'self';
+               style-src 'self' 'unsafe-inline';
+               img-src 'self' data: https://cdn.vyde.dev;
+               font-src 'self';
+               connect-src 'self' %VITE_API_URL%;
+               form-action 'self';
+               base-uri 'none';
+               object-src 'none'"
+    />
+    <meta name="referrer" content="strict-origin-when-cross-origin" />
+    <meta name="color-scheme" content="dark light" />
+
+    <title>Identity — Vyde</title>
+  </head>
+  <body>
+    <div id="root"></div>
+    <script type="module" src="/src/main.tsx"></script>
+  </body>
+</html>

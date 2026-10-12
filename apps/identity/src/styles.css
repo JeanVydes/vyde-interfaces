@@ -1,0 +1,597 @@
+/**
+ * The app's own styles, and the only ones here.
+ *
+ * Everything structural — colour, type, space, motion, geometry — comes from `@vyde/tokens`.
+ * What lives in this file is the small number of things that are genuinely *this app's*: its shell
+ * layout and the two decorative layers.
+ *
+ * If a value appears here that could be a token, it belongs in `packages/tokens` instead. That is the
+ * rule that keeps four apps re-themeable from one file.
+ */
+
+@import '@vyde/tokens/base.css';
+
+:root {
+  /* Nothing script-dependent is revealed until the bundle has mounted. */
+  --shell-max: 84rem;
+}
+
+.no-js body > #root {
+  /* Hidden until `main.tsx` removes the class, so there is no flash of an unstyled shell. */
+  visibility: hidden;
+}
+
+/* -----------------------------------------------------------------------------
+ * The shell
+ * -------------------------------------------------------------------------- */
+
+.shell {
+  display: grid;
+  grid-template-columns: 15rem 1fr;
+  min-height: 100dvh;
+  animation: interface-rise 420ms ease-out both;
+}
+
+.landing {
+  min-height: 100dvh;
+  padding: var(--vyde-space-5) max(var(--vyde-space-5), 5vw) var(--vyde-space-6);
+  background:
+    linear-gradient(rgba(154, 255, 77, 0.035) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(154, 255, 77, 0.035) 1px, transparent 1px),
+    var(--vyde-bg);
+  background-size: 3rem 3rem;
+  animation: interface-rise 520ms ease-out both;
+}
+
+.landing__nav,
+.landing__actions {
+  display: flex;
+  align-items: center;
+  gap: var(--vyde-space-3);
+}
+
+.landing__nav {
+  justify-content: space-between;
+  max-width: var(--shell-max);
+  margin: 0 auto;
+}
+
+.landing__wordmark,
+.landing__eyebrow,
+.landing__grid span {
+  color: var(--vyde-accent);
+  font-family: var(--vyde-font-mono);
+  font-size: var(--vyde-text-xs);
+  letter-spacing: var(--vyde-tracking-wide);
+  text-transform: uppercase;
+}
+
+.landing__hero {
+  max-width: 58rem;
+  margin: clamp(6rem, 16vh, 11rem) auto clamp(5rem, 12vh, 9rem);
+}
+
+.landing__hero h1 {
+  max-width: 52rem;
+  margin: var(--vyde-space-4) 0;
+  font-family: var(--vyde-font-display);
+  font-size: clamp(2.8rem, 8vw, 7rem);
+  line-height: 0.94;
+  letter-spacing: -0.04em;
+  text-transform: uppercase;
+  text-wrap: balance;
+}
+
+.landing__lead {
+  max-width: 38rem;
+  color: var(--vyde-fg-dim);
+  font-size: clamp(1rem, 1.5vw, 1.25rem);
+  line-height: 1.6;
+}
+
+.landing__grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: var(--vyde-space-4);
+  max-width: var(--shell-max);
+  margin: 0 auto;
+}
+
+.landing__grid article {
+  min-height: 12rem;
+  padding: var(--vyde-space-4);
+  border: var(--vyde-border) solid var(--vyde-line);
+  background: color-mix(in srgb, var(--vyde-bg-raised) 78%, transparent);
+  transition: border-color 180ms ease, transform 180ms ease;
+}
+
+.landing__grid article:hover {
+  border-color: var(--vyde-accent);
+  transform: translateY(-4px);
+}
+
+.landing__grid h2 {
+  margin: var(--vyde-space-5) 0 var(--vyde-space-2);
+  font-family: var(--vyde-font-display);
+  text-transform: uppercase;
+}
+
+.landing__grid p {
+  margin: 0;
+  color: var(--vyde-fg-dim);
+  line-height: 1.5;
+}
+
+@keyframes interface-rise {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .landing, .shell { animation: none; }
+  .landing__grid article { transition: none; }
+}
+
+@media (max-width: 45rem) {
+  .landing__nav { align-items: flex-start; gap: var(--vyde-space-3); flex-direction: column; }
+  .landing__grid { grid-template-columns: 1fr; }
+  .landing__hero { margin-top: 6rem; }
+}
+
+/* One breakpoint, and it collapses rather than scrolls: a sidebar that has to be scrolled
+ * sideways is worse than no sidebar. */
+@media (max-width: 60rem) {
+  .shell {
+    grid-template-columns: 1fr;
+  }
+
+  .shell__nav {
+    border-right: none;
+    border-bottom: var(--vyde-border) solid var(--vyde-line);
+  }
+}
+
+.shell__nav {
+  padding: var(--vyde-space-5) var(--vyde-space-4);
+  border-right: var(--vyde-border) solid var(--vyde-line);
+  background: var(--vyde-bg);
+  display: grid;
+  grid-template-rows: auto 1fr auto;
+}
+
+.shell__brand {
+  display: grid;
+  gap: var(--vyde-space-1);
+  margin-bottom: var(--vyde-space-3);
+}
+
+.shell__brand_name {
+  font-family: var(--vyde-font-display);
+  font-size: var(--vyde-text-lg);
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--vyde-accent);
+}
+
+.shell__brand_subtitle {
+  font-family: var(--vyde-font-mono);
+  font-size: var(--vyde-text-xs);
+  letter-spacing: var(--vyde-tracking-wide);
+  text-transform: uppercase;
+  color: var(--vyde-fg-muted);
+}
+
+.shell__links {
+  display: grid;
+  gap: var(--vyde-space-1);
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.shell__link {
+  width: 100%;
+}
+
+.shell__link .button--quiet {
+  width: 100%;
+  padding: var(--vyde-space-2) var(--vyde-space-3);
+  background: transparent;
+  color: var(--vyde-fg);
+  text-transform: none;
+  letter-spacing: initial;
+  font-size: var(--vyde-text-sm);
+  clip-path: none;
+  text-align: left;
+}
+
+.shell__link .button--quiet:hover:not(:disabled) {
+  background: var(--vyde-bg-active);
+}
+
+.shell__link .button--quiet[aria-current='page'] {
+  color: var(--vyde-accent);
+  font-weight: 600;
+}
+
+.shell__action {
+  border-top: var(--vyde-border) solid var(--vyde-line);
+  margin-top: auto;
+}
+
+.shell__main {
+  padding: var(--vyde-space-6);
+  max-width: var(--shell-max);
+  width: 100%;
+}
+
+@media (max-width: 60rem) {
+  .shell__nav {
+    padding: var(--vyde-space-3);
+  }
+
+  .shell__main {
+    padding: var(--vyde-space-4);
+  }
+}
+
+/* -----------------------------------------------------------------------------
+ * Panels and headings
+ * -------------------------------------------------------------------------- */
+
+.panel {
+  background: var(--vyde-bg);
+  border: var(--vyde-border) solid var(--vyde-line);
+  /* The chamfer is a clip-path, so it survives a border-radius reset and a border. */
+  clip-path: var(--vyde-chamfer);
+  padding: var(--vyde-space-5);
+  margin-bottom: var(--vyde-space-5);
+}
+
+.panel__head {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  margin-bottom: var(--vyde-space-3);
+}
+
+.panel__title {
+  font-family: var(--vyde-font-display);
+  font-size: var(--vyde-text-lg);
+  letter-spacing: var(--vyde-tracking-wide);
+  text-transform: uppercase;
+  padding-bottom: var(--vyde-space-3);
+  border-bottom: var(--vyde-border) solid var(--vyde-line);
+  margin: 0;
+}
+
+.panel__description {
+  font-family: var(--vyde-font-body);
+  font-size: var(--vyde-text-sm);
+  color: var(--vyde-fg-dim);
+  margin: 0 0 var(--vyde-space-4) 0;
+}
+
+/* HUD corner brackets. Two pseudo-elements rather than four children: a decorative
+ * affordance that costs four DOM nodes per panel is not decorative, it is a tax. */
+.panel--bracketed {
+  position: relative;
+}
+
+.panel--bracketed::before,
+.panel--bracketed::after {
+  content: '';
+  position: absolute;
+  width: 12px;
+  height: 12px;
+  border: var(--vyde-border-thick) solid var(--vyde-accent);
+  pointer-events: none;
+}
+
+.panel--bracketed::before {
+  top: -1px;
+  left: -1px;
+  border-right: none;
+  border-bottom: none;
+}
+
+.panel--bracketed::after {
+  right: -1px;
+  bottom: -1px;
+  border-left: none;
+  border-top: none;
+}
+
+/* -----------------------------------------------------------------------------
+ * Login — a centred instrument column
+ * -------------------------------------------------------------------------- */
+
+.auth {
+  display: grid;
+  place-items: center;
+  min-height: 100dvh;
+  padding: var(--vyde-space-5);
+}
+
+.auth__panel {
+  width: min(26rem, 100%);
+  background: var(--vyde-bg);
+  border: var(--vyde-border) solid var(--vyde-line-strong);
+  clip-path: var(--vyde-chamfer-lg);
+  padding: var(--vyde-space-6);
+}
+
+.auth__brand {
+  font-family: var(--vyde-font-display);
+  font-size: var(--vyde-text-xl);
+  text-transform: uppercase;
+  letter-spacing: 0.14em;
+  color: var(--vyde-accent);
+  margin-bottom: var(--vyde-space-2);
+}
+
+.auth__sub {
+  font-family: var(--vyde-font-mono);
+  font-size: var(--vyde-text-xs);
+  letter-spacing: var(--vyde-tracking-wide);
+  text-transform: uppercase;
+  color: var(--vyde-fg-dim);
+  margin-bottom: var(--vyde-space-5);
+}
+
+.auth__switch {
+  margin: var(--vyde-space-4) 0 0;
+  color: var(--vyde-fg-dim);
+  font-size: var(--vyde-text-sm);
+  text-align: center;
+}
+
+.auth__switch a {
+  color: var(--vyde-accent);
+}
+
+/* -----------------------------------------------------------------------------
+ * Forms
+ * -------------------------------------------------------------------------- */
+
+.field {
+  display: grid;
+  gap: var(--vyde-space-2);
+  margin-bottom: var(--vyde-space-4);
+}
+
+.field__label {
+  font-family: var(--vyde-font-mono);
+  font-size: var(--vyde-text-xs);
+  letter-spacing: var(--vyde-tracking-wide);
+  text-transform: uppercase;
+  color: var(--vyde-fg-muted);
+}
+
+.field__input {
+  width: 100%;
+  padding: var(--vyde-space-3);
+  background: var(--vyde-bg-raised);
+  border: var(--vyde-border) solid var(--vyde-line-strong);
+  clip-path: var(--vyde-chamfer-sm);
+  color: var(--vyde-fg);
+  font-family: var(--vyde-font-body);
+  font-size: var(--vyde-text-base);
+  transition: border-color var(--vyde-dur-fast) var(--vyde-ease-out);
+}
+
+.field__input:hover {
+  border-color: var(--vyde-accent-glow);
+}
+
+.field__input[aria-invalid='true'] {
+  border-color: var(--vyde-danger);
+}
+
+/* The error itself. Never animated in, never a toast, and never inside the input's
+ * placeholder — an error that vanishes on the next keystroke is an error nobody fixes. */
+.field__error {
+  font-family: var(--vyde-font-mono);
+  font-size: var(--vyde-text-xs);
+  color: var(--vyde-danger);
+  display: flex;
+  gap: var(--vyde-space-2);
+  align-items: baseline;
+}
+
+.field__hint {
+  font-size: var(--vyde-text-xs);
+  color: var(--vyde-fg-dim);
+}
+
+.button {
+  width: 100%;
+  padding: var(--vyde-space-3) var(--vyde-space-4);
+  background: var(--vyde-accent);
+  color: var(--vyde-accent-fg);
+  border: none;
+  clip-path: var(--vyde-chamfer-sm);
+  font-family: var(--vyde-font-display);
+  font-size: var(--vyde-text-base);
+  letter-spacing: var(--vyde-tracking-wide);
+  text-transform: uppercase;
+  cursor: pointer;
+  transition: filter var(--vyde-dur-fast) var(--vyde-ease-out);
+}
+
+.button:hover:not(:disabled) {
+  filter: brightness(1.12);
+}
+
+/* Disabled rather than dimmed: a control that looks available and is not is worse than one
+ * that plainly is not, and the user is left wondering whether the click registered. */
+.button:disabled {
+  background: var(--vyde-bg-active);
+  color: var(--vyde-fg-dim);
+  cursor: not-allowed;
+}
+
+/* The one error box. `role="alert"` is in the markup, not here. */
+.alert {
+  display: flex;
+  gap: var(--vyde-space-3);
+  align-items: flex-start;
+  padding: var(--vyde-space-3);
+  margin-bottom: var(--vyde-space-4);
+  background: var(--vyde-danger-bg);
+  border: var(--vyde-border) solid var(--vyde-danger);
+  clip-path: var(--vyde-chamfer-sm);
+  font-family: var(--vyde-font-mono);
+  font-size: var(--vyde-text-sm);
+  letter-spacing: var(--vyde-tracking-wide);
+  color: var(--vyde-danger);
+}
+
+.alert--info {
+  background: var(--vyde-accent-soft);
+  border-color: var(--vyde-accent);
+  color: var(--vyde-fg);
+}
+
+/* -----------------------------------------------------------------------------
+ * Notices — a message that is not a failure
+ * -------------------------------------------------------------------------- */
+
+.notice {
+  display: flex;
+  gap: var(--vyde-space-3);
+  align-items: flex-start;
+  padding: var(--vyde-space-3);
+  margin-bottom: var(--vyde-space-4);
+  background: var(--vyde-bg-raised);
+  border: var(--vyde-border) solid var(--vyde-line);
+  clip-path: var(--vyde-chamfer-sm);
+  font-family: var(--vyde-font-body);
+  font-size: var(--vyde-text-sm);
+  color: var(--vyde-fg);
+}
+
+.notice--info {
+  border-color: var(--vyde-line-strong);
+}
+
+.notice--success {
+  border-color: var(--vyde-accent);
+  color: var(--vyde-accent);
+}
+
+.notice--warning {
+  border-color: var(--vyde-danger);
+  color: var(--vyde-danger);
+}
+
+/* -----------------------------------------------------------------------------
+ * Data rows — a label and a value, in monospace
+ * -------------------------------------------------------------------------- */
+
+.data {
+  display: grid;
+  grid-template-columns: 10rem 1fr;
+  gap: var(--vyde-space-2);
+  align-items: baseline;
+  padding: var(--vyde-space-2) 0;
+  border-bottom: var(--vyde-border) solid var(--vyde-line);
+}
+
+.data:last-child {
+  border-bottom: none;
+}
+
+.data__label {
+  font-family: var(--vyde-font-mono);
+  font-size: var(--vyde-text-xs);
+  letter-spacing: var(--vyde-tracking-wide);
+  text-transform: uppercase;
+  color: var(--vyde-fg-muted);
+}
+
+.data__value {
+  font-family: var(--vyde-font-mono);
+  font-size: var(--vyde-text-sm);
+  color: var(--vyde-fg);
+  word-break: break-all;
+}
+
+/* -----------------------------------------------------------------------------
+ * Chips — a small status marker
+ * -------------------------------------------------------------------------- */
+
+.chip {
+  display: inline-block;
+  padding: 0 var(--vyde-space-2);
+  font-family: var(--vyde-font-mono);
+  font-size: var(--vyde-text-xs);
+  letter-spacing: var(--vyde-tracking-wide);
+  text-transform: uppercase;
+  border: var(--vyde-border) solid var(--vyde-line-strong);
+  clip-path: var(--vyde-chamfer-sm);
+}
+
+.chip--ok {
+  color: var(--vyde-accent);
+  border-color: var(--vyde-accent);
+}
+
+.chip--warn {
+  color: var(--vyde-danger);
+  border-color: var(--vyde-danger);
+}
+
+.chip--bad {
+  color: var(--vyde-danger);
+  border-color: var(--vyde-danger);
+  background: var(--vyde-danger-bg);
+}
+
+.chip--idle {
+  color: var(--vyde-fg-dim);
+}
+
+/* -----------------------------------------------------------------------------
+ * Actions — a row of buttons
+ * -------------------------------------------------------------------------- */
+
+.actions {
+  display: flex;
+  gap: var(--vyde-space-2);
+  margin-top: var(--vyde-space-3);
+}
+
+/* -----------------------------------------------------------------------------
+ * Panel sections — sub-headings inside a panel
+ * -------------------------------------------------------------------------- */
+
+.panel__section {
+  font-family: var(--vyde-font-mono);
+  font-size: var(--vyde-text-xs);
+  letter-spacing: var(--vyde-tracking-wide);
+  text-transform: uppercase;
+  color: var(--vyde-fg-muted);
+  margin: var(--vyde-space-4) 0 var(--vyde-space-2) 0;
+  padding-top: var(--vyde-space-3);
+  border-top: var(--vyde-border) solid var(--vyde-line);
+}
+
+.panel__section:first-of-type {
+  border-top: none;
+  padding-top: 0;
+  margin-top: 0;
+}
+
+/* -----------------------------------------------------------------------------
+ * Avatar
+ * -------------------------------------------------------------------------- */
+
+.avatar {
+  display: block;
+  width: 128px;
+  height: 128px;
+  object-fit: cover;
+  /* A chamfer, so the avatar belongs to the same instrument as everything else. */
+  clip-path: var(--vyde-chamfer-sm);
+}

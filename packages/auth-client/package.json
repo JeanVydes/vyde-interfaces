@@ -1,0 +1,24 @@
+{
+  "name": "@vyde/auth-client",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "description": "The single fetch wrapper for the Vyde browser apps: bearer access tokens and explicit refresh",
+  "main": "./src/index.ts",
+  "types": "./src/index.ts",
+  "exports": {
+    ".": "./src/index.ts",
+    "./errors": "./src/errors.ts"
+  },
+  "dependencies": {
+    "zod": "^3.23.8"
+  },
+  "scripts": {
+    "typecheck": "tsc --noEmit",
+    "test": "vitest run"
+  },
+  "devDependencies": {
+    "typescript": "^5.6.2",
+    "vitest": "^2.1.2"
+  }
+}

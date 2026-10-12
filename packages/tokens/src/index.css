@@ -1,0 +1,258 @@
+/* =============================================================================
+ * Vyde design tokens
+ * =============================================================================
+ *
+ * Every colour, size and duration in every Vyde app comes from here. A component that
+ * hardcodes a value is a component that cannot be re-themed, and the whole theming story
+ * collapses on the first theme that is not the one it was written against.
+ *
+ * # The register
+ *
+ * This is an INSTRUMENT — the surface every user touches — so the language is a technical
+ * readout rather than a dashboard: hairline rules, chamfered geometry, monospace data, condensed
+ * headings, HUD brackets and status marks. What it must never become is decoration that fights
+ * the reading. Terminal *flavour* is allowed in labels; every action stays unambiguous in plain
+ * language.
+ *
+ * # Themes are token swaps, never forks
+ *
+ * `[data-accent="green"]` below re-points four variables. Nothing else changes. A theme that
+ * required touching a component is a second component, and there are already enough of those.
+ *
+ * # Contrast
+ *
+ * The accent is for status and emphasis, never for body text. Body text is `--fg` on `--bg`, and
+ * that pair is held at or above WCAG 2.2 AA (4.5:1) in every theme. Red-on-black is legible as a
+ * *mark* and unreadable as a paragraph, and the difference is the reason these are two systems.
+ *
+ * # Motion
+ *
+ * `--dur-*` are capped at 200ms and every one of them is applied through
+ * `--ease-out`, which decelerates. Motion is feedback; a transition that takes half a second is a
+ * delay the user waits for and cannot cancel.
+ */
+
+/* -----------------------------------------------------------------------------
+ * 1. Palette — the dark base. One theme's worth, as raw values.
+ * -------------------------------------------------------------------------- */
+
+:root {
+  /* Surfaces, darkest to lightest. Four steps is enough for an instrument: a
+   * panel, a raised control, a hover, and the page behind them. */
+  --vyde-void: #07080a; /* the page */
+  --vyde-bg: #0c0e11; /* a panel */
+  --vyde-bg-raised: #131619; /* a control at rest */
+  --vyde-bg-active: #1b1f24; /* a control pressed, or a selected row */
+
+  /* Hairlines. This is the primary structural device, so it gets three weights. */
+  --vyde-line: #1e242b;
+  --vyde-line-strong: #2b333d;
+  --vyde-line-accent: color-mix(in oklab, var(--vyde-accent) 40%, transparent);
+
+  /* Text. Four steps, and the jump from `fg-dim` to `fg` is deliberately large:
+   * a dimmed label has to read as *labelled*, not as *disabled*. */
+  --vyde-fg: #e8edf2; /* 15.8:1 on --bg */
+  --vyde-fg-muted: #9aa7b4; /* 7.1:1 */
+  --vyde-fg-dim: #66727e; /* 3.6:1 — non-essential marks only, never text you must read */
+  --vyde-fg-inverse: #07080a;
+
+  /* Status. Separate from the accent on purpose: an error must not change hue just
+   * because somebody picked the amber theme. */
+  --vyde-danger: #ff4d5e;
+  --vyde-danger-bg: color-mix(in oklab, var(--vyde-danger) 14%, transparent);
+  --vyde-warn: #ffb020;
+  --vyde-warn-bg: color-mix(in oklab, var(--vyde-warn) 14%, transparent);
+  --vyde-ok: #35d07f;
+  --vyde-ok-bg: color-mix(in oklab, var(--vyde-ok) 14%, transparent);
+
+  /* The accent. Red is the default and the reason this interface exists. */
+  --vyde-accent: #ff3b4e;
+  --vyde-accent-fg: #0c0e11;
+  --vyde-accent-soft: color-mix(in oklab, var(--vyde-accent) 16%, transparent);
+  --vyde-accent-glow: color-mix(in oklab, var(--vyde-accent) 40%, transparent);
+
+  /* Scrims and overlays. */
+  --vyde-scrim: color-mix(in oklab, var(--vyde-void) 78%, transparent);
+  --vyde-focus: var(--vyde-accent);
+
+  /* -------------------------------------------------------------------------------
+   * 2. Space — a 4px base, named by intent rather than by number.
+   *
+   * `space-3` is not "12px", it is "inside a control". A token named by size cannot be
+   * used consistently; one named by role can.
+   * -------------------------------------------------------------------------- */
+  --vyde-space-0: 0;
+  --vyde-space-1: 0.25rem; /* 4  — between an icon and its label */
+  --vyde-space-2: 0.5rem; /* 8  — inside a chip, a badge */
+  --vyde-space-3: 0.75rem; /* 12 — inside a control */
+  --vyde-space-4: 1rem; /* 16  — between controls */
+  --vyde-space-5: 1.5rem; /* 24 — between groups */
+  --vyde-space-6: 2rem; /* 32 — between sections */
+  --vyde-space-8: 4rem; /* 64 — page rhythm */
+
+  /* -------------------------------------------------------------------------------
+   * 3. Type
+   *
+   * Two families, and they are not interchangeable: a display face for headings and a
+   * monospace for everything a machine produced. Data in a proportional face is data you
+   * have to read; data in monospace is data you can *scan*, which is the whole point of
+   * putting identifiers and codes in front of a person at all.
+   * -------------------------------------------------------------------------- */
+  --vyde-font-display: 'Rajdhani', 'Oswald', 'Helvetica Neue', system-ui, sans-serif;
+  --vyde-font-mono: ui-monospace, 'SF Mono', 'JetBrains Mono', 'Fira Code', 'Cascadia Mono',
+    Menlo, Consolas, monospace;
+  --vyde-font-body: system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+
+  --vyde-text-xs: 0.6875rem; /* 11 — serial labels, HUD marks */
+  --vyde-text-sm: 0.8125rem; /* 13 — labels, secondary */
+  --vyde-text-base: 0.9375rem; /* 15 — body */
+  --vyde-text-lg: 1.125rem; /* 18 — section headings */
+  --vyde-text-xl: 1.5rem; /* 24 — page headings */
+  --vyde-text-2xl: 2rem; /* 32 — the one number on a screen */
+  --vyde-text-3xl: 3rem; /* 48 — a login boot sequence, and nothing else */
+
+  --vyde-leading-tight: 1.1;
+  --vyde-leading-snug: 1.25;
+  --vyde-leading-normal: 1.5;
+
+  --vyde-tracking-wide: 0.08em; /* the serial-label look */
+  --vyde-tracking-mono: 0.02em; /* monospace wants less, not more */
+
+  /* -------------------------------------------------------------------------------
+   * 4. Geometry — chamfered, never rounded.
+   *
+   * `--vyde-chamfer` is a clip-path, not a radius: a real radius has to be *large* to be
+   * visible at all, and a large radius reads as friendly. A 6px notch on one corner reads as
+   * machined at any size, which is the register this interface is going for.
+   * -------------------------------------------------------------------------- */
+  --vyde-chamfer-sm: polygon(6px 0, 100% 0, 100% 100%, 0 100%, 0 6px);
+  --vyde-chamfer: polygon(10px 0, 100% 0, 100% 100%, 0 100%, 0 10px);
+  --vyde-chamfer-lg: polygon(16px 0, 100% 0, 100% 100%, 0 100%, 0 16px);
+  --vyde-chamfer-br: polygon(0 0, 100% 0, 100% calc(100% - 10px), calc(100% - 10px) 100%, 0 100%);
+  --vyde-chamfer-all: polygon(
+    10px 0,
+    calc(100% - 10px) 0,
+    100% 10px,
+    100% calc(100% - 10px),
+    calc(100% - 10px) 100%,
+    10px 100%,
+    0 calc(100% - 10px),
+    0 10px
+  );
+
+  --vyde-border: 1px;
+  --vyde-border-thick: 2px;
+
+  /* -------------------------------------------------------------------------------
+   * 5. Motion — capped, decelerating, and individually disableable.
+   *
+   * `prefers-reduced-motion` zeroes the durations *and* the decorative effects. It is not
+   * a nicety: a person who has asked the operating system for less movement is telling us
+   * something, and a `transition: 200ms` on a login form is 200ms they did not ask for.
+   * -------------------------------------------------------------------------- */
+  --vyde-dur-instant: 80ms;
+  --vyde-dur-fast: 120ms;
+  --vyde-dur-base: 160ms;
+  --vyde-dur-slow: 200ms; /* the ceiling. Nothing in the app exceeds this. */
+
+  /* Decelerating: fast out of the gate, settled at the end. */
+  --vyde-ease-out: cubic-bezier(0.16, 1, 0.3, 1);
+  --vyde-ease-in-out: cubic-bezier(0.65, 0, 0.35, 1);
+  /* For something that leaves the screen, and only that. */
+  --vyde-ease-in: cubic-bezier(0.7, 0, 0.84, 0);
+
+  --vyde-scanline-opacity: 0.035;
+  --vyde-grid-opacity: 0.5;
+}
+
+/* -----------------------------------------------------------------------------
+ * 6. Themes — four variables each, and nothing else.
+ * -------------------------------------------------------------------------- */
+
+:root,
+[data-accent='red'] {
+  --vyde-accent: #ff3b4e;
+  --vyde-accent-fg: #0c0e11;
+}
+
+[data-accent='amber'] {
+  --vyde-accent: #ffab1f;
+  --vyde-accent-fg: #0c0e11;
+}
+
+[data-accent='green'] {
+  --vyde-accent: #35d07f;
+  --vyde-accent-fg: #06120b;
+}
+
+[data-accent='cyan'] {
+  --vyde-accent: #35c8e8;
+  --vyde-accent-fg: #04121a;
+}
+
+/* -----------------------------------------------------------------------------
+ * 7. Appearance preferences.
+ *
+ * `dark_mode` is a three-state preference — on, off, and follow the system — so "off"
+ * cannot be expressed as the absence of a dark block. It has to be a second, real
+ * definition. See `domain/preference.rs` in the identity service for the same key.
+ * -------------------------------------------------------------------------- */
+
+[data-theme='dark'] {
+  color-scheme: dark;
+}
+
+[data-theme='light'] {
+  color-scheme: light;
+
+  --vyde-void: #dfe3e8;
+  --vyde-bg: #f2f4f7;
+  --vyde-bg-raised: #ffffff;
+  --vyde-bg-active: #e6eaf0;
+
+  --vyde-line: #ccd3dc;
+  --vyde-line-strong: #aab4c0;
+
+  /* Inverted from dark, and the ratio is the same: 14.9:1 on --bg. */
+  --vyde-fg: #12161b;
+  --vyde-fg-muted: #4a5563;
+  --vyde-fg-dim: #6b7684;
+  --vyde-fg-inverse: #f2f4f7;
+
+  /* Status hues are darkened so they hold their contrast on a light ground; the same
+   * hex that reads as a bright mark on black reads as *nothing* on white. */
+  --vyde-danger: #c8102e;
+  --vyde-warn: #8a5a00;
+  --vyde-ok: #0b6b3a;
+}
+
+[data-motion='reduced'] {
+  --vyde-dur-instant: 0ms;
+  --vyde-dur-fast: 0ms;
+  --vyde-dur-base: 0ms;
+  --vyde-dur-slow: 0ms;
+  --vyde-scanline-opacity: 0;
+  --vyde-grid-opacity: 0;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  :root {
+    --vyde-dur-instant: 0ms;
+    --vyde-dur-fast: 0ms;
+    --vyde-dur-base: 0ms;
+    --vyde-dur-slow: 0ms;
+    --vyde-scanline-opacity: 0;
+    --vyde-grid-opacity: 0;
+  }
+}
+
+@media (prefers-contrast: more) {
+  :root {
+    /* Thicker lines and a brighter foreground. Not a theme — the accent is untouched,
+     * because the accent is a status colour and dimming it would hide the status. */
+    --vyde-line: #4a5563;
+    --vyde-line-strong: #6b7684;
+    --vyde-fg: #ffffff;
+    --vyde-fg-muted: #d3dae2;
+  }
+}

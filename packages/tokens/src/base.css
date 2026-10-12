@@ -1,0 +1,212 @@
+/* =============================================================================
+ * Vyde base styles and the decorative layers
+ * =============================================================================
+ *
+ * Two things live here that a component must not:
+ *
+ *   1. The reset and the handful of element defaults that are true everywhere.
+ *   2. The two decorative layers — the grid and the scanlines.
+ *
+ * # The decorative layers, and why they are marked
+ *
+ * Both are `pointer-events: none` and both are painted *behind* content. That is not styling
+ * taste, it is the rule that makes them safe to ship at all:
+ *
+ *   - **Scanlines** run over the whole viewport at `--scanline-opacity`. They must never
+ *     cross body text, an input, or an error message. A repeating 2px dark band over 12px
+ *     text measurably lowers its contrast, and the effect compounds with the accent's own
+ *     brightness. So the scrim sits at z-index 0 and every piece of content is above it.
+ *   - **The grid** is a background image on the body, not an overlay, so it cannot overlap
+ *     anything that was not already transparent.
+ *
+ * Both are also zeroed by `prefers-reduced-motion` and by `[data-motion='reduced']`, because a
+ * scanline that scrolls or pulses is motion, and a person who asked for less of it should not
+ * have to also ask for less of the decoration.
+ */
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html {
+  -webkit-text-size-adjust: 100%;
+}
+
+body {
+  margin: 0;
+  min-height: 100dvh;
+  background-color: var(--vyde-void);
+  color: var(--vyde-fg);
+  font-family: var(--vyde-font-body);
+  font-size: var(--vyde-text-base);
+  line-height: var(--vyde-leading-normal);
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+}
+
+/* The grid. A background *image* on the body rather than an overlay element, so it is
+ * behind everything by construction and needs no z-index or pointer-events guard. */
+body {
+  background-image:
+    linear-gradient(var(--vyde-line) 1px, transparent 1px),
+    linear-gradient(90deg, var(--vyde-line) 1px, transparent 1px);
+  background-size: 32px 32px;
+  background-position: -1px -1px;
+  opacity: 1;
+  /* Two thin rules rather than a blur: a blurred grid is a smear, and the hairline is the
+   * register. Opacity is applied to the grid itself via a colour-mix so the background
+   * colour underneath is unaffected. */
+  --grid-line: color-mix(in oklab, var(--vyde-line) calc(var(--vyde-grid-opacity) * 40%), transparent);
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  body {
+    background-image:
+      linear-gradient(var(--grid-line) 1px, transparent 1px),
+      linear-gradient(90deg, var(--grid-line) 1px, transparent 1px);
+  }
+}
+
+#root {
+  position: relative;
+  z-index: 1;
+  isolation: isolate;
+  min-height: 100dvh;
+}
+
+/* The scanline scrim. Fixed, behind everything, and explicitly non-interactive. */
+.vyde-scanlines {
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  background: repeating-linear-gradient(
+    to bottom,
+    transparent 0,
+    transparent 2px,
+    rgb(0 0 0 / var(--vyde-scanline-opacity)) 2px,
+    rgb(0 0 0 / var(--vyde-scanline-opacity)) 4px
+  );
+}
+
+/* -----------------------------------------------------------------------------
+ * Element defaults that are true for every app
+ * -------------------------------------------------------------------------- */
+
+h1,
+h2,
+h3,
+h4 {
+  margin: 0;
+  font-family: var(--vyde-font-display);
+  font-weight: 600;
+  letter-spacing: 0.01em;
+  line-height: var(--vyde-leading-tight);
+  /* Condensed display faces need optical correction; the heading weight carries the
+   * presence instead of size. */
+  text-transform: uppercase;
+}
+
+p {
+  margin: 0 0 var(--vyde-space-4);
+}
+
+p:last-child {
+  margin-bottom: 0;
+}
+
+a {
+  color: var(--vyde-accent);
+  text-decoration-thickness: 1px;
+  text-underline-offset: 2px;
+}
+
+code,
+kbd,
+samp,
+pre,
+.vyde-mono {
+  font-family: var(--vyde-font-mono);
+  letter-spacing: var(--vyde-tracking-mono);
+  /* A hairline box, not a filled one: an inline code fragment is *data*, and filling the
+   * background puts a block of colour inside a line of text. */
+  background: color-mix(in oklab, var(--vyde-fg) 7%, transparent);
+  padding: 0.1em 0.35em;
+  font-size: 0.92em;
+}
+
+/* Every focus ring in the app, in one place.
+ *
+ * `:focus-visible` rather than `:focus`, so a pointer click does not paint a ring nobody is
+ * looking at, and `outline` rather than a box-shadow, because a box-shadow is invisible to
+ * forced-colours mode — where an outline is not. */
+:where(a, button, input, select, textarea, summary, [tabindex]):focus-visible {
+  outline: var(--vyde-border-thick) solid var(--vyde-focus);
+  outline-offset: 2px;
+  border-radius: 0;
+}
+
+/* Windows High Contrast / forced colours. The tokens are replaced wholesale by the OS, so
+ * the decorative layers are the first thing to go: they are the only elements that carry no
+ * information. */
+@media (forced-colors: active) {
+  .vyde-scanlines {
+    display: none;
+  }
+
+  body {
+    background-image: none;
+  }
+}
+
+::selection {
+  background: var(--vyde-accent-soft);
+  color: var(--vyde-fg);
+}
+
+/* -----------------------------------------------------------------------------
+ * Utility classes for things every screen needs
+ * -------------------------------------------------------------------------- */
+
+/* A serial label: the small uppercase tracked monospace that names a value. */
+.vyde-label {
+  font-family: var(--vyde-font-mono);
+  font-size: var(--vyde-text-xs);
+  letter-spacing: var(--vyde-tracking-wide);
+  text-transform: uppercase;
+  color: var(--vyde-fg-dim);
+}
+
+/* Visually hidden but available to a screen reader. Never `display: none`, which removes
+ * it from the accessibility tree entirely. */
+.vyde-sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+  border: 0;
+}
+
+/* The one skip link per app. Off-screen until focused, then pinned to the top-left. */
+.vyde-skip-link {
+  position: absolute;
+  top: var(--vyde-space-2);
+  left: var(--vyde-space-2);
+  z-index: 100;
+  padding: var(--vyde-space-2) var(--vyde-space-4);
+  background: var(--vyde-accent);
+  color: var(--vyde-accent-fg);
+  font-family: var(--vyde-font-mono);
+  font-size: var(--vyde-text-sm);
+  transform: translateY(calc(-100% - var(--vyde-space-4)));
+}
+
+.vyde-skip-link:focus {
+  transform: translateY(0);
+}

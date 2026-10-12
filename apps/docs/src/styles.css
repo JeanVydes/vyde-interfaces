@@ -1,0 +1,23 @@
+:root {
+  --sl-color-accent-low: #132d26;
+  --sl-color-accent: #64d5a0;
+  --sl-color-accent-high: #b6f5d7;
+  --sl-font: var(--vyde-font-body);
+  --sl-font-system: var(--vyde-font-body);
+  --sl-font-mono: var(--vyde-font-mono);
+}
+
+.hero h1 { letter-spacing: -0.055em; }
+.hero .tagline { max-width: 44rem; }
+.sl-markdown-content pre { border: 1px solid var(--sl-color-gray-5); }
+.sl-markdown-content code { color: var(--sl-color-accent-high); }
+.download-skill {
+  display: inline-flex;
+  gap: 0.6rem;
+  align-items: center;
+  padding: 0.7rem 1rem;
+  border: 1px solid var(--sl-color-accent);
+  color: var(--sl-color-accent-high);
+  text-decoration: none;
+}
+.download-skill:hover { background: var(--sl-color-accent-low); }
