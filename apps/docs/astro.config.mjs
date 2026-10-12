@@ -1,12 +1,21 @@
 import { defineConfig } from 'astro/config';
+import mdx from '@astrojs/mdx';
 import starlight from '@astrojs/starlight';
 
 export default defineConfig({
   site: 'https://docs.vyde.dev',
   integrations: [
+    mdx(),
     starlight({
+      expressiveCode: false,
       title: 'Vyde Developer Docs',
       description: 'OAuth 2.1 and OpenID Connect for the Vyde platform.',
+      head: [
+        {
+          tag: 'script',
+          attrs: { type: 'module', src: '/mermaid.js' },
+        },
+      ],
       social: [{ icon: 'github', label: 'GitHub', href: 'https://github.com/JeanVydes/vyde-cli' }],
       customCss: ['./src/styles.css'],
       sidebar: [

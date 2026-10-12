@@ -1,68 +1,37 @@
 :root {
-  --sl-color-accent-low: #e8e8e8;
-  --sl-color-accent: #111111;
-  --sl-color-accent-high: #000000;
-  --sl-color-white: #111111;
-  --sl-color-gray-1: #2b2b2b;
-  --sl-color-gray-2: #555555;
-  --sl-color-gray-3: #777777;
-  --sl-color-gray-4: #b7b7b7;
-  --sl-color-gray-5: #dedede;
-  --sl-color-gray-6: #f1f1f1;
-  --sl-color-gray-7: #fafafa;
-  --sl-font: "Helvetica Neue", Helvetica, Arial, sans-serif;
-  --sl-font-system: "Helvetica Neue", Helvetica, Arial, sans-serif;
-  --sl-font-mono: "SFMono-Regular", Consolas, "Liberation Mono", monospace;
+  --sl-color-accent-low: #132d26;
+  --sl-color-accent: #64d5a0;
+  --sl-color-accent-high: #b6f5d7;
+  --sl-font: var(--vyde-font-body);
+  --sl-font-system: var(--vyde-font-body);
+  --sl-font-mono: var(--vyde-font-mono);
 }
 
-:root[data-theme="dark"] {
-  --sl-color-accent-low: #292929;
-  --sl-color-accent: #f2f2f2;
-  --sl-color-accent-high: #ffffff;
-  --sl-color-white: #f2f2f2;
-  --sl-color-gray-1: #e5e5e5;
-  --sl-color-gray-2: #bdbdbd;
-  --sl-color-gray-3: #929292;
-  --sl-color-gray-4: #686868;
-  --sl-color-gray-5: #414141;
-  --sl-color-gray-6: #292929;
-  --sl-color-gray-7: #191919;
-}
-
-.hero h1 {
-  letter-spacing: -0.06em;
-  font-weight: 650;
-}
-
-.hero .tagline {
-  max-width: 44rem;
-}
-
-.sl-markdown-content pre {
+.hero h1 { letter-spacing: -0.055em; }
+.hero .tagline { max-width: 44rem; }
+.sl-markdown-content pre { border: 1px solid var(--sl-color-gray-5); }
+.sl-markdown-content code { color: var(--sl-color-accent-high); }
+.mermaid {
+  overflow-x: auto;
+  margin: 1.5rem 0;
+  padding: 1rem;
   border: 1px solid var(--sl-color-gray-5);
-  border-radius: 0.35rem;
+  background: var(--sl-color-gray-7);
 }
-
-.sl-markdown-content code {
-  color: var(--sl-color-accent-high);
+.mermaid svg { max-width: 100%; height: auto; }
+.developer-details {
+  margin: 1.5rem 0;
+  border: 1px solid var(--sl-color-gray-5);
+  padding: 0.8rem 1rem;
 }
-
-starlight-tabs {
-  --sl-color-accent-low: var(--sl-color-gray-6);
-  --sl-color-accent: var(--sl-color-accent);
-  --sl-color-accent-high: var(--sl-color-accent-high);
-}
-
+.developer-details summary { cursor: pointer; font-weight: 600; }
 .download-skill {
   display: inline-flex;
-  align-items: center;
   gap: 0.6rem;
+  align-items: center;
   padding: 0.7rem 1rem;
-  border: 1px solid currentColor;
+  border: 1px solid var(--sl-color-accent);
   color: var(--sl-color-accent-high);
   text-decoration: none;
 }
-
-.download-skill:hover {
-  background: var(--sl-color-accent-low);
-}
+.download-skill:hover { background: var(--sl-color-accent-low); }
