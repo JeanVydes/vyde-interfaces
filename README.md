@@ -18,7 +18,7 @@ interfaces belong under `apps/`; reusable browser code belongs under `packages/`
 
 ## Local development
 
-Requirements: Node.js 20+ and pnpm 10+.
+Requirements: Node.js 22.12+ and pnpm 10+.
 
 ```bash
 corepack enable
