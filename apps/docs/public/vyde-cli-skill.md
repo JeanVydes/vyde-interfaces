@@ -1,39 +1,124 @@
 ---
 name: vyde-cli
-description: Use and extend the headless Vyde CLI without reintroducing a TUI or bypassing its service/socket architecture.
+description: Use the Vyde command-line client to sign in and manage a Vyde account.
 ---
 
 # Vyde CLI
 
-The CLI lives in `interfaces/cli.vyde.dev`. It is headless only: do not add terminal UI code or
-restore `ratatui`/`crossterm`.
+Use `vyde` to manage a Vyde account from a terminal. Prefer the installed release over building
+from source. Commands print human-readable output for account actions and JSON for `manage`
+operations.
 
-## Architecture
-
-Commands are parsed in `vyde/src/headless.rs`, sent as typed `core::channel::Request` values over
-the Unix socket, dispatched by `core::Dispatcher`, and executed through `PlatformPort` by
-`vyde/src/platform/mod.rs`. The background `vyde serve` process owns the active OAuth session and
-the keyring token. New commands must follow this path instead of making HTTP calls in the parser.
-
-## OAuth and local development
-
-The CLI is a public OAuth client using Authorization Code + PKCE and
-`http://127.0.0.1:8675/callback`. Configure `VYDE_OAUTH_CLIENT_ID`; never add a client secret.
-`--dev` selects the local HTTPS gateway, and the adapter trusts `services/certs/ca.crt` or the
-`VYDE_CA_CERT_PATH` override without disabling TLS verification.
-
-## Management commands
-
-Identity administration is exposed by `vyde manage ...`; results are JSON. Use `--yes` for grant
-revocation, member removal, leaving organizations, invitation revocation, application deletion,
-and application-secret regeneration. Keep destructive confirmation explicit for new operations.
-
-## Validation
-
-From `interfaces/cli.vyde.dev` run:
+## Install
 
 ```bash
-cargo fmt --all
-cargo check -p vyde-cli
-cargo test -p vyde-cli
+curl -fsSL https://docs.vyde.dev/install.sh | sh
+export PATH="$HOME/.local/bin:$PATH"
+vyde help
 ```
+
+The installer supports Linux x86_64 and macOS Apple Silicon. To install a specific version:
+
+```bash
+VYDE_CLI_VERSION=0.1.0 curl -fsSL https://docs.vyde.dev/install.sh | sh
+```
+
+## Sign in
+
+Set the public OAuth client ID configured for the CLI, then run:
+
+```bash
+export VYDE_OAUTH_CLIENT_ID=YOUR_PUBLIC_CLIENT_ID
+vyde login
+vyde whoami
+```
+
+The browser opens for authorization and returns to the local callback
+`http://127.0.0.1:8675/callback`. The CLI is a public application: never create, request, or
+store a client secret.
+
+Useful session commands:
+
+```bash
+vyde ping
+vyde whoami
+vyde logout
+```
+
+## Account
+
+```bash
+vyde profile --name "Ada Lovelace" --language en
+vyde emails
+vyde email add --email ada@example.com
+vyde email promote --email EMAIL_ID
+vyde email remove --email EMAIL_ID
+vyde photo ./avatar.png
+```
+
+Adding an email sends a verification code. For administrative verification:
+
+```bash
+vyde manage email resend --account-id ACCOUNT_ID --email-id EMAIL_ID
+vyde manage email verify --account-id ACCOUNT_ID --email-id EMAIL_ID --code CODE
+```
+
+## Organizations
+
+```bash
+vyde org
+vyde org create --name "Example team"
+vyde org rename --id ORG_ID --name "New team name"
+vyde manage org members list --org-id ORG_ID
+vyde manage org member-add --org-id ORG_ID --member-id ACCOUNT_ID --role member
+vyde manage org invites list --org-id ORG_ID
+vyde manage org invite-create --org-id ORG_ID --role member --expires 604800 --max-uses 1
+```
+
+Invitation links can be previewed and accepted:
+
+```bash
+vyde manage org invite-preview --token INVITE_TOKEN
+vyde manage org invite-accept --token INVITE_TOKEN
+```
+
+## OAuth applications and grants
+
+```bash
+vyde manage app list --org-id ORG_ID
+vyde manage app create --org-id ORG_ID --name "My app" --public true
+vyde manage app update --org-id ORG_ID --client-id CLIENT_ID --name "New name"
+vyde manage app secret --org-id ORG_ID --client-id CLIENT_ID
+vyde manage grants list
+```
+
+Use a public application for native, browser-only, and CLI clients. Use a confidential
+application only when its secret can remain on a server. Public applications use PKCE and do not
+need a client secret.
+
+Destructive actions require explicit confirmation:
+
+```bash
+vyde manage grants revoke --client-id CLIENT_ID --yes
+vyde manage org members remove --org-id ORG_ID --account-id ACCOUNT_ID --yes
+vyde manage org invite-revoke --org-id ORG_ID --email-id INVITATION_ID --yes
+vyde manage app delete --org-id ORG_ID --client-id CLIENT_ID --yes
+```
+
+## Environments and scripts
+
+Production is the default. Use `--dev` for the local Vyde environment:
+
+```bash
+vyde --dev login
+vyde --dev whoami
+```
+
+Override the API endpoint when needed:
+
+```bash
+VYDE_GATEWAY_URL=https://api.example.test vyde ping
+```
+
+For automation, check the command exit status and parse the JSON returned by `vyde manage`.
+Never put access tokens, refresh tokens, or client secrets in shell history or source control.
