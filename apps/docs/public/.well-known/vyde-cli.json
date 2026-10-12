@@ -1,0 +1,10 @@
+{
+  "client_id": "879e5a01-c6b0-4b6f-b737-c422ad0e7c92",
+  "redirect_uri": "http://127.0.0.1:8675/callback",
+  "scopes": [
+    "openid",
+    "profile",
+    "email",
+    "offline_access"
+  ]
+}

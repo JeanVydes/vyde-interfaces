@@ -27,10 +27,15 @@ The CLI uses a public OAuth application. Register this exact redirect URI on the
 http://127.0.0.1:8675/callback
 ```
 
-Enable the authorization-code and refresh-token grants, then set the public client ID:
+The CLI reads its public client configuration from:
+
+```text
+https://docs.vyde.dev/.well-known/vyde-cli.json
+```
+
+Enable the authorization-code and refresh-token grants on that application, then run:
 
 ```bash
-export VYDE_OAUTH_CLIENT_ID=YOUR_PUBLIC_CLIENT_ID
 vyde login
 vyde whoami
 ```

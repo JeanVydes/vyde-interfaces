@@ -75,4 +75,4 @@ case ":${PATH:-}:" in
   *:"$install_dir":*) ;;
   *) printf 'Add it to your PATH: export PATH="%s:$PATH"\n' "$install_dir" ;;
 esac
-printf 'Next: set VYDE_OAUTH_CLIENT_ID and run `vyde login`.\n'
+printf 'Next: run `vyde login`.\n'

@@ -25,10 +25,10 @@ VYDE_CLI_VERSION=0.1.0 curl -fsSL https://docs.vyde.dev/install.sh | sh
 
 ## Sign in
 
-Set the public OAuth client ID configured for the CLI, then run:
+The installed release discovers its public OAuth client configuration from
+`https://docs.vyde.dev/.well-known/vyde-cli.json`. Run:
 
 ```bash
-export VYDE_OAUTH_CLIENT_ID=YOUR_PUBLIC_CLIENT_ID
 vyde login
 vyde whoami
 ```
